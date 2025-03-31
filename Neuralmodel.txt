@@ -1,0 +1,66 @@
+#Neural network model
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn import metrics
+import numpy as np
+# Import the seaborn library
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Loading in path
+data = pd.read_csv('MathFinal.csv')
+
+
+# replaces missing values by chaning NaN values with the median
+data.fillna(data.median(numeric_only=True), inplace=True)
+
+# creates VaccionRate which is the binary target
+median_rate = data['VaccinationRate'].median()
+data['HighVaccinationRate'] = (data['VaccinationRate'] > median_rate).astype(int)
+
+# placing the features and target variable in respected variables
+X = data[['Vaccinated', 'Population']]
+y = data['HighVaccinationRate']
+
+# Normalize the features
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X)
+
+# training-test split
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42, stratify=y)
+
+# Training the MLP Classifier
+mlp_model = MLPClassifier(hidden_layer_sizes=(100,), max_iter=300, random_state=42)
+mlp_model.fit(X_train, y_train)
+
+# prediction for cases that are 1's
+y_proba = mlp_model.predict_proba(X_test)[:, 1] 
+
+# Apply a threshold of 0.15
+threshold = 0.15
+y_pred_custom = (y_proba >= threshold).astype(int)
+
+# Calculate confusion matrix for custom threshold
+from sklearn.metrics import confusion_matrix
+confusion_matrix_custom = confusion_matrix(y_test, y_pred_custom)
+
+
+
+# creates heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(confusion_matrix_custom, annot=True, fmt='d', cmap='Blues', xticklabels=['Low Rate', 'High Rate'], yticklabels=['Low Rate', 'High Rate'])
+plt.title(f'Confusion Matrix Heatmap (Threshold = {threshold})') # Changed custom_threshold to threshold
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
+
+
+
+# print result
+print('---------- MLP Classifier with Custom Threshold ----------')
+print(f"Custom Threshold: {threshold}\n")
+print(f"Classification Report:\n{metrics.classification_report(y_test, y_pred_custom)}")
+print(f"Confusion Matrix:\n{metrics.confusion_matrix(y_test, y_pred_custom)}")

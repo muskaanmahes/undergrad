@@ -1,0 +1,84 @@
+#logistic regression model
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# downloading my path
+data = pd.read_csv('MathFinal.csv')  
+
+# fixes any missing values by converting the numeric columns in the dataset
+data.fillna(data.select_dtypes(include=np.number).median(), inplace=True)
+
+# making a binary target variable which is based on the median VaccinationRate variable
+median_rate = data['VaccinationRate'].median()
+data['HighVaccinationRate'] = (data['VaccinationRate'] > median_rate).astype(int)
+
+#preprocessing the data by converting categorical columns:month and age_group_label to indicator variables
+data = pd.get_dummies(data, columns=['month', 'age_group_label'], drop_first=True)
+
+# seperating the features by creating these columns that will be used for binary classification
+X = math_final_data.drop(columns=['VaccinationRate', 'HighVaccinationRate'])
+y = math_final_data['HighVaccinationRate']
+
+# Normalize the numeric features
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X)
+
+# training-test split
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42, stratify=y)
+
+# Logistic Regression model
+logisticmodel = LogisticRegression()
+logisticmodel.fit(X_train, y_train)
+
+# Predict probabilities if the instance is 1
+y_proba = logisticmodel.predict_proba(X_test)[:, 1] 
+
+# changing the threshold to 0.15 to get a better balance for class
+custom_threshold = 0.15
+y_pred_custom = (y_proba >= custom_threshold).astype(int)
+
+# logistic regression model with threshold
+classification_custom = metrics.classification_report(y_test, y_pred_custom)
+confusion_matrix_custom = metrics.confusion_matrix(y_test, y_pred_custom)
+
+# Print results for treshold
+print('---------- Logistic Regression Evaluation with Custom Threshold ------------')
+print(f"Custom Threshold: {custom_threshold}\n")
+print(f"Classification Report:\n{classification_custom}")
+print(f"Confusion Matrix:\n{confusion_matrix_custom}")
+
+# creates a heatmap for the confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(confusion_matrix_custom, annot=True, fmt='d', cmap='Blues', xticklabels=['Low Rate', 'High Rate'], yticklabels=['Low Rate', 'High Rate']) #labels of the heatmap and add visulazations 
+plt.title(f'Confusion Matrix Heatmap (Threshold = {custom_threshold})')
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
+
+# Extract metrics for plotting
+report_custom = metrics.classification_report(y_test, y_pred_custom, output_dict=True)
+categories = ['0', '1']  # 0 is Low Rate and 1 is High Rate
+metrics_to_plot = ['precision', 'recall', 'f1-score']
+
+scores_custom = {metric: [report_custom[cat][metric] for cat in categories] for metric in metrics_to_plot}
+
+# Bar chart for metrics
+x = np.arange(len(categories))  # Label locations
+width = 0.2  # Bar width
+
+plt.figure(figsize=(10, 6))
+for i, metric in enumerate(metrics_to_plot):
+    plt.bar(x + i * width, scores_custom[metric], width, label=metric)
+
+plt.xticks(x + width, ['Low Rate', 'High Rate'])
+plt.ylabel('Score')
+plt.title(f'Classification Metrics by Class (Threshold = {custom_threshold})')
+plt.legend()
+plt.show()

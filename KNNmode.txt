@@ -1,0 +1,91 @@
+#KNN model
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+import seaborn as sns
+import numpy as np
+
+# loads in path
+data = pd.read_csv('MathFinal.csv')
+
+# replaces missing values by chaning NaN values with the median
+data.fillna(data.median(numeric_only=True), inplace=True)
+
+
+# creates VaccionRate which is the binary target
+median_rate = data['VaccinationRate'].median()
+data['HighVaccinationRate'] = (data['VaccinationRate'] > median_rate).astype(int) 
+
+# placing the features and target variable in respected variables
+X = data[['Vaccinated', 'Population']]
+y = data['HighVaccinationRate']
+
+# Normalize the features
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X)
+
+# training-test split
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42, stratify=y)
+
+# creating the plot
+plt.figure(figsize=(10, 5))
+plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='viridis', alpha=0.8)
+plt.title("Training Data Visualization (Vaccinated vs Population)")
+plt.xlabel("Normalized Vaccinated")
+plt.ylabel("Normalized Population")
+plt.colorbar(label="High Vaccination Rate (1=High, 0=Low)")
+plt.show()
+
+# sklearn KNN object
+k = 7
+model = KNeighborsClassifier(n_neighbors=k, weights='uniform', metric='minkowski')
+model.fit(X_train, y_train)
+
+# prediction for cases that are 1's
+y_proba = model.predict_proba(X_test)[:, 1] 
+
+# changing treshold to 0.15
+custom_threshold = 0.15
+y_pred_custom = (y_proba >= custom_threshold).astype(int)
+
+# KNN model with threshold 
+classification_report_custom = metrics.classification_report(y_test, y_pred_custom)
+confusion_matrix_custom = metrics.confusion_matrix(y_test, y_pred_custom)
+
+# Print results 
+print('---------- KNN Evaluation with Custom Threshold ------------')
+print(f"Custom Threshold: {custom_threshold}\n")
+print(f"Classification Report:\n{classification_report_custom}")
+print(f"Confusion Matrix:\n{confusion_matrix_custom}")
+
+# creats heatmap 
+plt.figure(figsize=(8, 6))
+sns.heatmap(confusion_matrix_custom, annot=True, fmt='d', cmap='Blues', xticklabels=['Low Rate', 'High Rate'], yticklabels=['Low Rate', 'High Rate'])
+plt.title(f'Confusion Matrix Heatmap (Threshold = {custom_threshold})')
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
+
+# Bar chart for metrics
+report_custom = metrics.classification_report(y_test, y_pred_custom, output_dict=True)
+categories = ['0', '1']  # Corresponding to 'Low Rate' and 'High Rate'
+metrics_to_plot = ['precision', 'recall', 'f1-score']
+
+scores_custom = {metric: [report_custom[cat][metric] for cat in categories] for metric in metrics_to_plot}
+
+x = np.arange(len(categories))  # Label locations
+width = 0.2  # Bar width
+
+plt.figure(figsize=(10, 6))
+for i, metric in enumerate(metrics_to_plot):
+    plt.bar(x + i * width, scores_custom[metric], width, label=metric)
+
+plt.xticks(x + width, ['Low Rate', 'High Rate'])
+plt.ylabel('Score')
+plt.title(f'Classification Metrics by Class (Threshold = {custom_threshold})')
+plt.legend()
+plt.show()
