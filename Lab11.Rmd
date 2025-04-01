@@ -1,0 +1,134 @@
+---
+title: "Lab 11"
+author: "Muskaan Mahes"
+---
+
+
+
+In this lab, you will practice working with a relational database. First, we will identify the flights to the most popular destinations. Then we will investigate the relationship between weather and flight delays using April 2013 flight information. As always, you’ll submit your final html file to Canvas. First load the `tidyverse` and `nycflights13` packages.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(nycflights13)
+
+```
+
+
+
+1. Suppose we want to find the top 10 most popular destinations from the column `dest`. Here is a reasonable approach: count the total number of flights to each destination by using the `count()` function and then sort accordingly.
+
+
+
+```{r}
+
+top_dest <- flights %>%
+count(dest, sort = TRUE) %>% 
+  slice_head(n=10)
+print(top_dest)
+
+```
+
+
+
+2. Create a subset (of the original dataset of course) which includes each flight that went to one of those top 10 destinations. Instead of using filter (which would work!), use `semi_join()` to combine datasets by destination, connecting the two tables and keeping the rows in `flights` that have a match in `top_dest`. 
+
+
+
+```{r}
+
+flights_top = flights %>% 
+  semi_join(top_dest, by = "dest")
+  print(flights_top)
+
+```
+
+
+
+
+
+3. Now let’s change topics slightly and consider only flights in April 2013. Create a dataset named `flights_apr`. (Hint: This time, use the `filter()` function.)
+
+
+
+```{r}
+
+flights_apr = flights %>% 
+  filter(year==2013, month == 4)
+  print(flights_apr)
+
+```
+
+
+
+4. Notice that, unfortunately for our study of interest, the `flights_apr` dataset does not contain weather information. However, we could add the weather information by joining the `weather` dataset. Create a dataset `flights_apr_weather` by joining `weather` dataset to `flights_apr` using `left_join()`. (Hint: this is a natural join, so you don't have to specify key variables. If you see a foreign key variable and want to join in this way, that is fine, too!)
+
+
+
+```{r}
+flights_apr_weather = flights_apr %>% 
+  left_join(weather, by = c("year", "month", "day", "hour", "origin"))
+  print(flights_apr_weather)
+
+```
+
+
+
+5. In the `flights_apr_weather` dataset, visibility (in miles) and wind speed (in mpg) are recorded in the `visib` and `wind_speed` variables, respectively. Now compute the daily average visibility and wind speed. 
+
+
+
+```{r}
+
+daily_average = flights_apr_weather %>% 
+  group_by(year,month,day) %>% 
+  summarize(avg_visibility = mean(visib, na.rm=TRUE), avg_wind = mean(wind_speed, na.rm = TRUE))
+print(daily_average)
+```
+
+
+
+6. Create a scatterplot that shows the relationship between windspeed (`wind_speed`) and departure delay (`dep_delay`) in April 2013.
+
+
+
+```{r, fig.width=6, fig.height=4, fig.align='center'}
+
+ggplot(flights_apr_weather, aes(x=wind_speed,y = dep_delay)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Relationship between wind speed and departure delay",
+    x = "Wind speed (mph)",
+    y= " Departure Delay (mins)"
+  ) + 
+  theme_minimal()
+```
+
+
+
+7. Create a scatterplot that shows the relationship between visibility (`visib`) and departure delay (`dep_delay`).
+
+
+
+```{r, fig.width=6, fig.height=4, fig.align='center'}
+ggplot(flights_apr_weather, aes(x= visib,y = dep_delay)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Relationship between visibility and departure delay",
+    x = "Visibility (miles)",
+    y= " Departure Delay (mins)"
+  ) + 
+  theme_minimal()
+
+
+```
+
+
+
+8. What can you say about the relationships between the weather conditions and departure delay based on the two graphics above? 
+
+
+
+Answer: Based on the graphs we can that the higher the wind speed shows an increase in departure delays. Additionally, there are more clustering at lower wind speed where delays are scattered more. For the graph, visibility vs. Departure Delay there are extreme departure delays scattered across different visibility levels, therefore, indicating that low visibility may not just directly predict delays. 
+

@@ -1,0 +1,103 @@
+---
+title: "Lab 10"
+author: Muskaan Mahes
+output: html_document
+date: "2024-11-14"
+---
+
+1.Suppose the vector x is created with the following numbers: x=c(8,4,10,6,12). Write the output expected if you use the following R functions/commands:
+
+```{r}
+library(tidyverse)
+x=c(8,4,10,6,12)
+#A
+min_rank(x)
+#B
+cumsum(x)
+#C
+cummin(x)
+#D
+cummax(x)
+#E
+cummean(x)
+
+
+```
+
+2.Access the tidyverse package, and enter ?babynames to briefly familiarize yourself with the dataset named “babynames.” Enter the word babynames in R. What information do you see (see following questions.)
+
+```{r}
+library(babynames)
+babynames
+#A. tibble
+#B. 1,924,665
+#C. 5 Variables
+glimpse(babynames)
+#D. Year(double integer)), sex(character), name(character), n(integer), prop(double integer)
+```
+
+3.Suppose the year is 2004. (This is a year that I think some of you were born, so that’s why I think the following is a relevant question!) What were the most popular babynames for both males and females in the year 2004? (Use slice_head to get this answer.)
+
+```{r}
+babynames %>%
+  filter(year==2004) %>%
+  group_by(gender=sex) %>%
+  arrange(desc(prop)) %>% 
+  slice_head(n=1)
+  
+```
+
+4.Answer the same question as in #3, except use min_rank to get the answer.
+
+```{r}
+babynames %>% 
+  filter(year == 2004) %>% 
+  group_by(sex) %>% 
+  mutate(rank = min_rank(desc(prop))) %>% 
+  filter(rank == 1)
+```
+
+5.What names were in the top 1% of most popular male and female babynames in 2004? (Of course, look to see if your name made the cut!)
+
+```{r}
+babynames %>% 
+  filter(year==2004) %>%
+  group_by(gender=sex) %>%
+  arrange(desc(prop)) %>% 
+  slice_head(prop=0.01)
+  
+```
+
+6.Consider your first name (either full name or nickname) and the name of a parent, sibling, or friend’s name. Write the code in R (using ggplot and geom_line) to create a timeplot of the popularity of the two names from 1880 until the end of the time of the dataset (2017). You should have one line (it won’t be a perfectly straight line, of course) for each of the two names. Describe what this plot tells you about the popularity of both names.
+
+```{r}
+library(ggplot2)
+babynames %>% 
+  filter((name=="Muskaan"&sex == "F")| name =="Nikhil"& sex == "M") %>% 
+  ggplot(aes(y=prop, x=year, color= name)) +geom_line()
+  
+```
+
+7.What are the most commonly used babynames for both males and females from 1880 to 2017, in terms of total numbers (that is, counts of these names, not proportions of total names)?
+
+```{r}
+babynames %>% 
+  group_by(name,sex) %>% 
+  mutate(cum_n_name = cumsum(n)) %>% 
+  group_by(sex) %>% 
+  arrange(desc(cum_n_name)) %>% 
+  slice_head(n=1) %>% 
+  select(name,sex, cum_n_name)
+```
+
+8.What are the most commonly used babynames for both males and females from 1880 to 2017, in terms of proportions of all names (that is, considering the percentage of all names, not the counts of these names)?
+
+```{r}
+babynames %>% 
+  group_by(name,sex) %>% 
+  mutate(cum_n_prop = cumsum(prop)) %>% 
+  group_by(sex) %>% 
+  arrange(desc(cum_n_prop)) %>% 
+  slice_head(n=1) %>% 
+  select(name,sex, cum_n_prop)
+```
