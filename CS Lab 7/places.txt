@@ -1,0 +1,16 @@
+
+Bishop Boulevard,admire the campus view,0
+Perkins Theology School,visit the chapel,20
+Meadows,attend a concert,-10
+Westcott Field,cheer for the soccer team,-10
+Cox School of Business,take a class,20
+McFarlin Auditorium,watch a show,-10
+Dedman Law Library,study,20
+Dallas Hall,see the downtown skyline,0
+Fondren,Science do an experiment,20
+Simmons,take a class,20
+Hughes-Trigg Student Center, get a snack,-10
+Lyle,learn Java programming,20
+Moody,watch a basketball game,-10
+Residential Commons,take a nap,0
+Ford Stadium,cheer for Mustang football,-10
