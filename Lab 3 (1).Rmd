@@ -1,0 +1,63 @@
+---
+title: "Lab 3"
+author: "Nastaran Ghorbani"
+date: "2024-09-16"
+output: html_document
+---
+
+
+
+# Question 1
+a) Load the dataset provided below. 
+b) What are the dimensions of the UN dataset.
+```{r}
+library(carData)
+data(UN)
+
+
+```
+
+
+# Question 2
+
+Clean the dataset, by removing the "NA", use na.omit().
+```{r}
+
+```
+
+
+
+# Question 3
+a) What are the mean and range of the fertility variable in the cleaned UN dataset by using mean() and range()?
+
+b) What are the summary statistics of the cleaned UN dataset, and specifically for the fertility variable?
+
+c) What are the first quartile (Q1), third quartile (Q3), and interquartile range (IQR) of the fertility variable in the cleaned dataset?
+
+```{r}
+
+```
+
+
+
+# Question 4
+What does the boxplot of the fertility variable reveal about its distribution and outliers?
+
+```{r}
+
+```
+
+
+# Question 5
+
+a) Investigate the correlation between ppgdp variable and lifeExpF. Is there a strong positive or negative correlation between these two variables?
+
+b) Create a frequency table of the variable region.
+
+c) Create a contingency table of countries by their region (region) and group (group).
+
+```{r}
+library(tidyverse)
+
+```
+

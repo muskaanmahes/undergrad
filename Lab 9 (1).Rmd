@@ -1,0 +1,128 @@
+---
+title: "Lab 9"
+author: "Muskaan Mahes"
+---
+
+In this lab, you will practice some of the data transformations we have discussed in class lately. Submit the html file to Canvas. 
+
+First load `tidyverse` package and change the working directory. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+
+1. Key functions for various tasks of interest:
+
+Data processing is a very important part of exploring data; it occurs when raw data are collected and translated into usable information that will be analyzed by data scientists. A well-cleaned dataset without missing values, outliers, and typos is much more suitable for exploration than for datasets in which these are unfortunately present.
+
+
+Now recall the key functions for various transformations you have learned from recent class meetings. Specify which function would you use in each of the following situations:
+(i.e.: `filter()`, `select()`... etc.)
+
+A) Suppose that you are interested in one or several variables of the dataset, and you want to pick them out so you can further explore them. select()
+
+B) Choose some of the observations that meet certain conditions: filter()
+
+C) Add new variables while preserving old ones: mutate()
+
+D) Group rows by the value of variables: group_by()
+
+
+
+2. Import three NHANES datasets, demographic, and examination.
+
+
+
+
+3. We want to know the average age for each ethnic group. Compute the average age of `RIDAGEYR` for six ethnic groups in `RIDRETH3`. Also, interpret the results. 
+
+```{r}
+demographic %>%
+  group_by(RIDRETH3) %>% 
+  summarise(avg = mean(RIDAGEYR))
+
+  
+
+```
+Interpretation: Group 3 has the highest average age and group 7 has the lowest age
+
+
+4. We want to determine the highest education by gender. Count the number of people in each education level `DMDEDUC2` and gender group `RIAGENDR`. Also, interpret the results. 
+
+```{r}
+demographic %>% 
+  group_by(DMDEDUC2,RIAGENDR) %>% 
+  summarise(count=n())
+  
+
+```
+Interpretation: the highest level of education would be in group 4 for DMDEDUC2 and the highest level of education for gender in RIAGENDER is male and the lowest is female 
+
+
+5. The weight variable was recorded in metric units. We want to compute a new variable, named BMI by using the formula `BMXWT/(BMXHT/100)^2`. Create the new variable `BMI` and compare it with `BMXBMI`.
+
+```{r}
+examination %>% 
+  mutate(BMI = BMXWT/(BMXHT/100)^2) %>% 
+  select(BMI, BMXBMI) %>% 
+  slice_head(n=10)
+
+
+```
+interpretation: BMI is more accurate whereas the BMXBMI is rounded off. 
+
+
+6. We would like to learn more about the relationship between weight and height, by counting the number of people in group `BMXWT` who weigh less than or equal to 80 kilograms and who have height `BMXHT` greater than or  equal to 150 centimeters.
+
+```{r}
+examination %>% 
+  filter(BMXWT <= 80, BMXHT >= 150) %>% 
+  summarise(n()) 
+  
+
+```
+
+
+
+7. The height and weight are measured in metric units, respectively. We want to convert centimeters to feet, and kilograms to pounds. The conversion formula is `1 foot = centimeter/30.48` and `1 pound = kilogram /2.20`. Create new height and weight variables by feet and pounds, respectively, and present them with the existing variables `BMXHT` and `BMXWT`.
+
+```{r}
+examination %>% 
+  mutate(height = BMXHT/30.48) %>% 
+  mutate(weight = BMXWT/2.20) %>% 
+  select(BMXHT, height, BMXWT, weight) %>% 
+  slice_head(n=10)
+  
+
+```
+
+
+
+8. We want to identify the 5 tallest individuals in the dataset. One way to do this (not the only way, though) is to select the height variable, order it by descending, and display the first five observations.
+
+```{r}
+examination %>% 
+  arrange(desc(BMXHT)) %>% 
+  select(BMXHT) %>% 
+  slice_head(n=5)
+
+
+```
+
+
+
+
+
+9. Pick a new variable, briefly describe it, and compute its five number summary
+average of the variable
+Variable description:
+```{r}
+examination %>% 
+  select(BPXCHR) %>% 
+  summary() 
+
+```
+interpretations: the minimum is 60.0, the median is 102, the mean is 105.5 and the max is 178.0, the range is 32
+
+

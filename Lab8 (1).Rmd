@@ -1,0 +1,96 @@
+
+---
+title: "Lab 8"
+author: "Your name"
+output: html_document
+---
+
+# Introduction
+
+In this lab we are going to use the `tidyverse` package and the **starwars** dataset in R. 
+
+
+Make sure you have loaded the `tidyverse` package and the **starwars** dataset before you begin.
+
+```{r}
+library(tidyverse)
+data(starwars)
+```
+
+
+### 1. Filtering Data
+- **Q1**: Select all the characters that belong to the species "Human" and have blue eyes. Display their name and eye color.
+
+```{r}
+
+
+```
+
+### 2. Selecting Columns
+- **Q2**: Select only the columns related to a character’s physical attributes (e.g., `name`, `height`, `mass`, `hair_color`, `eye_color`, `skin_color`).
+
+```{r}
+
+
+```
+
+### 3. Arranging Data
+- **Q3**: Arrange the data by `mass` in ascending order and display the name and mass of the lightest character.
+
+```{r}
+
+
+```
+
+- **Q4**: Order characters by `height` in descending order, but only show the top 5 tallest characters, displaying their name and height.
+
+```{r}
+
+
+```
+
+### 4. Mutating and Renaming
+- **Q5**: Create a new column called `bmi` by calculating the Body Mass Index (BMI) of each character using `mass` and `height`.  (BMI formula: mass / (height/100)^2).
+
+```{r}
+
+
+```
+
+- **Q6**: Rename the column `homeworld` to `planet_origin` and display only the name, `species`, and `planet_origin` columns.
+
+```{r}
+
+
+```
+
+### 5. Summarizing Data
+- **Q7**: Group characters by `species` and calculate the average `mass` for each species. Arrange the results by average mass in descending order.
+
+```{r}
+
+
+```
+
+### 6. Combining Operations with Pipes
+- **Q8**: Find all female characters with a mass greater than 70. Select only their `name`, `mass`, and any columns containing "color."
+
+```{r}
+
+
+```
+
+- **Q9**: Using a combination of `group_by()` and `summarize()`, find the average height and mass for each eye color. Sort by average height in descending order.
+
+```{r}
+
+
+```
+
+
+- **Q10**: Which species has the greatest number of characters? Display the species name and the count.
+
+```{r}
+
+
+```

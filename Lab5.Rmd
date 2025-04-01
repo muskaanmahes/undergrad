@@ -1,0 +1,97 @@
+
+---
+title: "Lab 5"
+author: Muskaan Mahes
+output: html_document
+---
+
+## Multiple Choice Questions
+
+1. In a plot, if you want to fill circles with varying degrees of transparency, which aesthetic do you modify?  
+   a) fill  
+   b) shape(modifies the shape in the scatterplot)
+   c) size  
+   d) alpha  - ANSWER
+   
+   
+
+2. Which of the following data types is continuous?  
+   a) The number of pets  
+   b) The temperature in Dallas  - ANSWER
+   c) Phone numbers  
+   d) Zip codes  
+   
+   
+
+3. What kind of plot would you use to display multiple numerical variables on continuous axes?  
+   a) Scatterplot  - ANSWER
+   b) Histogram  
+   c) Boxplot  
+   d) Bar chart
+   
+   
+
+4. Which function in R allows you to see overlapping points in a plot?  
+   a) geom_point()  
+   b) geom_jitter()  - ANSWER
+   c) geom_line()  
+   d) geom_bar()  
+   
+   
+
+5. In ggplot2, if you want to display a plot of engine displacement vs highway miles per gallon from the 'mpg' dataset, colored by city miles per gallon, which function would you use?  
+   a) ggplot() + geom_boxplot()  
+   b) ggplot() + geom_point(aes(color = cty))  - ANSWER
+   c) ggplot() + geom_histogram()  
+   d) ggplot() + geom_bar()
+   
+   
+
+6. Which plot type is most appropriate for visualizing the distribution of a single numerical variable?  
+   a) Scatterplot  
+   b) Density plot  - ANSWER
+   c) Boxplot  
+   d) Bar chart
+
+
+7. If you wanted to compare two numerical variables with a fitted regression line, which function would you use in `ggplot2`?  
+   a) geom_line()  
+   b) geom_point()  
+   c) geom_smooth(method = "lm")  - ANSWER
+   d) geom_bar()
+
+---
+
+## Coding 
+
+1. Use the `ggplot2` package in R to create a density plot for the following task:
+
+   - Use the 'mpg' dataset.
+   - Create a density plot for the highway miles per gallon (`hwy`) to visualize the distribution of this variable.
+   - Add a title to the plot and label both axes.
+
+
+
+```{r}
+library(ggplot2)
+data(mpg)
+
+ggplot(mpg, aes(x=hwy)) + geom_density() +labs(title = "Density Plot of hwy variables", x = "hwy", y = "density")
+
+```
+
+2. Use `ggplot2` to create a bar plot of the number of cars in each `class` (e.g., SUV, compact, etc.) in the 'mpg' dataset. Make sure to label the axes and add a title.
+
+
+```{r}
+
+ggplot(mpg, aes(x=class)) + geom_bar() + labs(title = "Counts of cars by class ", x = " car class", y = "count")
+```
+
+3. Create scatterplots of `hwy` vs `cty` using the `mpg` dataset, and facet the plot by the drive type (`drv`). Label the axes and include a title.
+
+
+```{r}
+ggplot(mpg, aes(x= hwy, y=cty)) + geom_point() +facet_wrap(~drv) + labs(title = "Scatterplot of hwy vs cty faceted by drv", x = "hwy", y= "cty")
+
+```

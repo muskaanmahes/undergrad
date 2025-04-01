@@ -1,0 +1,71 @@
+
+---
+title: "Lab 4"
+author: 
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+data("diamonds")
+```
+
+## Question 1: Scatter Plot
+
+Using the `diamonds` dataset, create a scatter plot to display the relationship between the carat of a diamond and its price. 
+
+```{r}
+
+
+
+```
+
+
+
+## Question 2: Bar Plot
+
+Create a bar plot showing the count of diamonds by their cut. Color the bars based on the `clarity` of the diamonds.
+
+```{r}
+
+
+
+```
+
+
+
+## Question 3: Box Plot 
+
+Create a box plot to compare the distribution of diamond prices across different cuts. 
+
+```{r}
+
+
+
+```
+
+
+
+## Question 4: Histogram
+
+Plot a histogram showing the distribution of diamond prices.
+
+```{r}
+
+
+
+```
+
+
+
+
+## Question 5: Pie Chart
+
+Create a pie chart to show the distribution of diamond cuts.
+
+```{r}
+
+
+
+```
